@@ -100,3 +100,80 @@ async def translate_text(
         return "An unexpected error occurred."
     
 
+@function_tool()
+async def wikipedia_summary(
+    run_context: RunContext,
+    query: str,
+) -> str:
+    """
+    Provides a brief summary of a Wikipedia article for a given query.
+
+    Args:
+        query: The topic to search for on Wikipedia.
+    """
+    logging.info(f"Fetching Wikipedia summary for: {query}")
+    try:
+        # The 'wikipedia' library automatically handles searching and disambiguation.
+        # 'auto_suggest=True' helps find the right page even with typos.
+        # 'sentences=3' keeps the summary concise.
+        summary = wikipedia.summary(query, sentences=3, auto_suggest=True)
+        return summary
+    except wikipedia.exceptions.PageError:
+        logging.warning(f"Wikipedia page not found for query: {query}")
+        return f"Sorry, I couldn't find a Wikipedia page for '{query}'."
+    except wikipedia.exceptions.DisambiguationError as e:
+        logging.info(f"Disambiguation needed for query: {query}. Options: {e.options[:3]}")
+        # Return the top 3 suggestions to the user/agent
+        return f"That query is ambiguous. Did you mean: {', '.join(e.options[:3])}?"
+    except Exception as e:
+        logging.error(f"An unexpected error occurred while fetching from Wikipedia: {e}")
+        return "An error occurred while trying to get a Wikipedia summary."
+
+
+# Tool 3: Random Joke Generator
+@function_tool()
+async def get_random_joke(
+    run_context: RunContext,
+) -> str:
+    """
+    Fetches a random joke from a public API.
+    """
+    logging.info("Fetching a random joke.")
+    # This API provides jokes in a two-part format (setup and punchline).
+    api_url = "https://official-joke-api.appspot.com/random_joke"
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
+        data = response.json()
+        joke = f"{data['setup']} - {data['punchline']}"
+        return joke
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error calling joke API: {e}")
+        return "Sorry, I couldn't fetch a joke right now."
+    except Exception as e:
+        logging.error(f"An unexpected error occurred while fetching a joke: {e}")
+        return "An unexpected error occurred."
+
+
+# Tool 4: Safe Calculator
+@function_tool()
+async def calculate(
+    run_context: RunContext,
+    expression: str,
+) -> str:
+    """
+    Safely evaluates a mathematical expression.
+
+    Args:
+        expression: The mathematical string to evaluate (e.g., "5 * (3 + 1)").
+    """
+    logging.info(f"Calculating expression: {expression}")
+    try:
+        # asteval is a robust library for safely evaluating Python expressions.
+        # It prevents the execution of malicious code.
+        aeval = asteval.Astraeval()
+        result = aeval.eval(expression)
+        return f"The result of '{expression}' is {result}."
+    except Exception as e:
+        logging.error(f"Error evaluating expression '{expression}': {e}")
+        return f"I couldn't calculate that. Please check if it's a valid mathematical expression."
