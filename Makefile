@@ -13,6 +13,7 @@ build:
 # Run the container
 run:
 	docker run -it \
+		-p 7860:7860 \
 		--name $(CONTAINER_NAME) \
 		-v $(PWD)/src:/app \
 		$(IMAGE_NAME)

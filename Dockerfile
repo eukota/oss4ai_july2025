@@ -24,7 +24,9 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
  && pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Watchdog for autoreload
-RUN pip install watchdog
+# RUN pip install watchdog
+
+EXPOSE 7860
 
 # Copy entrypoint to a safe location not overridden by volumes
 COPY entrypoint.sh /opt/entrypoint.sh
