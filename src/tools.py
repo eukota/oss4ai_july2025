@@ -5,6 +5,11 @@ import requests
 
 from langchain_community.tools import DuckDuckGoSearchRun
 
+
+import wikipedia
+import asteval
+
+
 @function_tool()
 async def get_weather(
     run_context: RunContext,
