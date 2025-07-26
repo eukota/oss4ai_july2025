@@ -11,3 +11,8 @@ duckduckgo-search
 langchain_community
 requests
 python-dotenv
+wikipedia
+asteval
+gradio==4.15.0
+gradio-client==0.8.1
+scipy
