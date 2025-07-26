@@ -6,6 +6,6 @@ Initial readme for team working together at the OSS4AI July 2025 Hackathon at th
 
 * Darrell
 * Monica
-* Arya
+* Aaryaneil
 * Charles
 
